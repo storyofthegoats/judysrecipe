@@ -339,22 +339,6 @@
         <hr class="divider" />
       </header>
 
-      <section class="recipe-view" id="recipeView" aria-live="polite">
-        <div class="recipe-name" id="recipeName">Pick a recipe to view.</div>
-        <div class="recipe-section">
-          <strong>Ingredients</strong>
-          <p class="recipe-body" id="recipeIngredients">—</p>
-        </div>
-        <div class="recipe-section">
-          <strong>Method</strong>
-          <p class="recipe-body" id="recipeMethod">—</p>
-        </div>
-        <div class="recipe-section" id="recipeNotesSection">
-          <strong>Family Notes</strong>
-          <p class="recipe-body" id="recipeNotes">—</p>
-        </div>
-      </section>
-
       <section class="panel">
         <div class="panel-title">Search &amp; discover</div>
         <p class="panel-note">
@@ -382,6 +366,22 @@
         </div>
         <ul class="results-list" id="results"></ul>
         <div class="status-text" id="resultsStatus">Waiting for recipes…</div>
+      </section>
+
+      <section class="recipe-view" id="recipeView" aria-live="polite">
+        <div class="recipe-name" id="recipeName">Pick a recipe to view.</div>
+        <div class="recipe-section">
+          <strong>Ingredients</strong>
+          <p class="recipe-body" id="recipeIngredients">—</p>
+        </div>
+        <div class="recipe-section">
+          <strong>Method</strong>
+          <p class="recipe-body" id="recipeMethod">—</p>
+        </div>
+        <div class="recipe-section" id="recipeNotesSection">
+          <strong>Family Notes</strong>
+          <p class="recipe-body" id="recipeNotes">—</p>
+        </div>
       </section>
 
       <div class="back-to-top-row">
@@ -596,13 +596,6 @@
         }
       }
 
-      function pickRandomRecipe(pool) {
-        const source = pool && pool.length ? pool : recipes;
-        if (!source.length) return null;
-        const randomIndex = Math.floor(Math.random() * source.length);
-        return source[randomIndex];
-      }
-
       function getCategoryLabel(recipe) {
         return recipe.category?.trim() || "Uncategorized";
       }
@@ -701,8 +694,11 @@
       });
 
       randomButton.addEventListener("click", () => {
-        const recipe = pickRandomRecipe(getFilteredRecipes());
-        if (!recipe) return;
+        const filtered = getFilteredRecipes();
+        const pool = filtered.length ? filtered : recipes;
+        if (!pool.length) return;
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        const recipe = pool[randomIndex];
         showRecipe(recipe);
         resultsStatus.textContent = `Recipe of the Day: ${recipe.name || "Untitled recipe"}`;
       });
@@ -725,13 +721,7 @@
         recipeNotesSection.style.display = "none";
       }
 
-      load().then(() => {
-        const recipe = pickRandomRecipe();
-        if (recipe) {
-          showRecipe(recipe);
-          resultsStatus.textContent = `Recipe of the Day: ${recipe.name || "Untitled recipe"}`;
-        }
-      });
+      load();
     </script>
   </body>
 </html>
