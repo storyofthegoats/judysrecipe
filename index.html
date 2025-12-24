@@ -397,6 +397,7 @@
         </div>
         <div class="recipe-actions">
           <button class="button secondary" id="openNewWindowButton" type="button">Open in new window</button>
+          <button class="button" id="printRecipeButton" type="button">Print recipe</button>
         </div>
       </section>
 
@@ -428,6 +429,7 @@
       const clearButton = document.getElementById("clearButton");
       const backToTopButton = document.getElementById("backToTop");
       const openNewWindowButton = document.getElementById("openNewWindowButton");
+      const printRecipeButton = document.getElementById("printRecipeButton");
 
       let recipes = [];
       let selectedCategory = null;
@@ -608,7 +610,7 @@
           }
         }
 
-        updateOpenWindowButtonState();
+        updateRecipeActionButtonsState();
 
         if (recipeView) {
           recipeView.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -753,13 +755,13 @@
         container.appendChild(section);
       }
 
-      function openRecipeInNewWindow() {
-        if (!currentRecipe) return;
+      function openRecipeWindow({ shouldPrint = false } = {}) {
+        if (!currentRecipe) return null;
 
         const popup = window.open("", "_blank");
         if (!popup) {
           alert("Please enable pop-ups to open recipes in a new window.");
-          return;
+          return null;
         }
 
         popup.opener = null;
@@ -802,24 +804,50 @@
         }
 
         doc.body.appendChild(container);
+
+        if (shouldPrint) {
+          popup.focus();
+          popup.print();
+        }
+
+        return popup;
       }
 
-      function updateOpenWindowButtonState() {
-        if (!openNewWindowButton) return;
+      function updateRecipeActionButtonsState() {
         const hasRecipe = Boolean(currentRecipe);
-        openNewWindowButton.disabled = !hasRecipe;
-        openNewWindowButton.title = hasRecipe ? "Open this recipe in a new window" : "Pick a recipe to enable this button";
+
+        if (openNewWindowButton) {
+          openNewWindowButton.disabled = !hasRecipe;
+          openNewWindowButton.title = hasRecipe ? "Open this recipe in a new window" : "Pick a recipe to enable this button";
+        }
+
+        if (printRecipeButton) {
+          printRecipeButton.disabled = !hasRecipe;
+          printRecipeButton.title = hasRecipe ? "Print this recipe in a new window" : "Pick a recipe to enable this button";
+        }
+      }
+
+      function openRecipeInNewWindow() {
+        openRecipeWindow();
+      }
+
+      function printRecipeFromNewWindow() {
+        openRecipeWindow({ shouldPrint: true });
       }
 
       if (openNewWindowButton) {
         openNewWindowButton.addEventListener("click", openRecipeInNewWindow);
       }
 
+      if (printRecipeButton) {
+        printRecipeButton.addEventListener("click", printRecipeFromNewWindow);
+      }
+
       if (recipeNotesSection) {
         recipeNotesSection.style.display = "none";
       }
 
-      updateOpenWindowButtonState();
+      updateRecipeActionButtonsState();
 
       load();
     </script>
