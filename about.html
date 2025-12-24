@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>About Judy's Recipe Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 40px 20px;
+        font-family: "JetBrains Mono", ui-monospace, Menlo, Monaco, Consolas,
+          "Courier New", monospace;
+        background: #050505;
+        color: #e5e5e5;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .top-link {
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 12px;
+        display: inline-block;
+      }
+
+      .title {
+        font-size: 1.3rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+        color: #9ad6ff;
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid #222;
+        margin: 0 0 24px 0;
+      }
+
+      .panel {
+        border: 1px solid #151515;
+        background: radial-gradient(circle at top left, #0e0e0e 0, #050505 70%);
+        border-radius: 12px;
+        padding: 16px 14px;
+        margin-bottom: 18px;
+      }
+
+      .panel-title {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin: 0 0 10px 0;
+        color: #cfcfcf;
+      }
+
+      .panel-note {
+        font-size: 0.95rem;
+        color: #e5e5e5;
+        margin: 0;
+        line-height: 1.7;
+      }
+
+      .footer {
+        font-size: 0.75rem;
+        color: #666;
+        margin-top: 24px;
+      }
+
+      @media (max-width: 700px) {
+        body {
+          padding: 28px 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <a class="top-link" href="./">← Back to recipes</a>
+      <header>
+        <div class="title">About this page</div>
+        <div class="subtitle">
+          Judy's recipe site honors the work that went into collecting, preserving, and sharing family favorites.
+        </div>
+        <hr class="divider" />
+      </header>
+
+      <section class="panel">
+        <div class="panel-title">Who keeps this going?</div>
+        <p class="panel-note">
+          This page was created and is maintained by Matthew Maupin, grandson of Judith Maupin. All recipes are from Judy's recipe book as maintained over the years by Judy and Gib, with the help of many family members including Mike Trulock, Nora and Joe Maupin, and the countless friends and family that shared their versions of recipes or contributed to the original recipes accumulated by Judy over the years.
+        </p>
+      </section>
+
+      <div class="footer">© 2025</div>
+    </main>
+  </body>
+</html>
