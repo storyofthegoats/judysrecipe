@@ -193,6 +193,13 @@
         transform: translateY(-1px);
       }
 
+      .button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        border-color: #222;
+        transform: none;
+      }
+
       .button.secondary {
         background: #0a0a0a;
         color: #9ad6ff;
@@ -299,6 +306,12 @@
         line-height: 1.6;
       }
 
+      .recipe-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+
       .status-text {
         font-size: 0.85rem;
         color: #888;
@@ -382,6 +395,9 @@
           <strong>Family Notes</strong>
           <p class="recipe-body" id="recipeNotes">—</p>
         </div>
+        <div class="recipe-actions">
+          <button class="button secondary" id="openNewWindowButton" type="button">Open in new window</button>
+        </div>
       </section>
 
       <div class="back-to-top-row">
@@ -411,6 +427,7 @@
       const randomButton = document.getElementById("randomButton");
       const clearButton = document.getElementById("clearButton");
       const backToTopButton = document.getElementById("backToTop");
+      const openNewWindowButton = document.getElementById("openNewWindowButton");
 
       let recipes = [];
       let selectedCategory = null;
@@ -591,6 +608,8 @@
           }
         }
 
+        updateOpenWindowButtonState();
+
         if (recipeView) {
           recipeView.scrollIntoView({ behavior: "smooth", block: "start" });
         }
@@ -717,9 +736,90 @@
         });
       }
 
+      function addRecipeSection(targetDocument, container, label, text, fallback) {
+        const section = targetDocument.createElement("div");
+        section.className = "recipe-section";
+
+        const heading = targetDocument.createElement("strong");
+        heading.textContent = label;
+
+        const body = targetDocument.createElement("p");
+        body.className = "recipe-body";
+        body.textContent = text?.trim() ? text : fallback;
+
+        section.appendChild(heading);
+        section.appendChild(body);
+
+        container.appendChild(section);
+      }
+
+      function openRecipeInNewWindow() {
+        if (!currentRecipe) return;
+
+        const popup = window.open("", "_blank");
+        if (!popup) {
+          alert("Please enable pop-ups to open recipes in a new window.");
+          return;
+        }
+
+        popup.opener = null;
+
+        const recipe = currentRecipe;
+        const titleText = recipe.name || "Recipe";
+
+        const doc = popup.document;
+        doc.open();
+        doc.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>${escapeHTML(
+          titleText
+        )}</title></head><body></body></html>`);
+        doc.close();
+
+        const styleEl = doc.createElement("style");
+        styleEl.textContent = `
+          * { box-sizing: border-box; }
+          body { margin: 0; padding: 32px 18px; font-family: "JetBrains Mono", ui-monospace, Menlo, Monaco, Consolas, "Courier New", monospace; background: #050505; color: #e5e5e5; }
+          .recipe-view { border: 1px solid #1a1a1a; background: radial-gradient(circle at top left, #0d0d0d 0, #040404 75%); border-radius: 12px; padding: 18px 16px; max-width: 860px; margin: 0 auto; }
+          .recipe-name { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 10px 0; }
+          .recipe-section { margin: 0 0 14px 0; }
+          .recipe-section strong { display: block; margin-bottom: 6px; color: #9ad6ff; letter-spacing: 0.08em; font-size: 0.85rem; }
+          .recipe-body { margin: 0; white-space: pre-line; line-height: 1.6; }
+        `;
+        doc.head.appendChild(styleEl);
+
+        const container = doc.createElement("section");
+        container.className = "recipe-view";
+
+        const nameEl = doc.createElement("div");
+        nameEl.className = "recipe-name";
+        nameEl.textContent = recipe.name || "Untitled recipe";
+        container.appendChild(nameEl);
+
+        addRecipeSection(doc, container, "Ingredients", recipe.ingredients, "No ingredients listed.");
+        addRecipeSection(doc, container, "Method", recipe.method, "No method provided yet.");
+
+        if (recipe.familyNotes?.trim()) {
+          addRecipeSection(doc, container, "Family Notes", recipe.familyNotes, "");
+        }
+
+        doc.body.appendChild(container);
+      }
+
+      function updateOpenWindowButtonState() {
+        if (!openNewWindowButton) return;
+        const hasRecipe = Boolean(currentRecipe);
+        openNewWindowButton.disabled = !hasRecipe;
+        openNewWindowButton.title = hasRecipe ? "Open this recipe in a new window" : "Pick a recipe to enable this button";
+      }
+
+      if (openNewWindowButton) {
+        openNewWindowButton.addEventListener("click", openRecipeInNewWindow);
+      }
+
       if (recipeNotesSection) {
         recipeNotesSection.style.display = "none";
       }
+
+      updateOpenWindowButtonState();
 
       load();
     </script>
