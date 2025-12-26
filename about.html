@@ -86,46 +86,6 @@
         font-size: 0.75rem;
         color: #666;
         margin-top: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        border-top: 1px solid #151515;
-        padding-top: 12px;
-      }
-
-      .footer-links {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .footer-separator {
-        color: #333;
-      }
-
-      .visit-counter {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: #9ad6ff;
-        background: #0a0a0a;
-        border: 1px solid #1f1f1f;
-        border-radius: 999px;
-        padding: 6px 12px;
-      }
-
-      .visit-counter-label {
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-      }
-
-      .visit-counter-value {
-        font-variant-numeric: tabular-nums;
-        color: #c9ffd0;
       }
 
       @media (max-width: 700px) {
@@ -158,47 +118,10 @@
         </p>
       </section>
 
+      <div class="footer">© 2025</div>
       <div class="footer">
-        <div class="footer-links">
-          <span>© 2025</span>
-          <span class="footer-separator" aria-hidden="true">•</span>
-          <a href="https://www.azzcardfile.com/">About the AZZ Cardfile</a>
-        </div>
-        <div class="visit-counter" aria-live="polite">
-          <span class="visit-counter-label">Visits</span>
-          <span class="visit-counter-value" id="visitCount">Loading…</span>
-        </div>
+        About the <a href="https://www.azzcardfile.com/">AZZ Cardfile</a>
       </div>
     </main>
-
-    <script>
-      const visitCountEl = document.getElementById("visitCount");
-      async function updateVisitCounter() {
-        if (!visitCountEl) return;
-        const endpoint = "https://api.countapi.xyz/hit/judysrecipe.com/site-visits";
-        try {
-          const response = await fetch(endpoint);
-          if (!response.ok) throw new Error(`Bad response: ${response.status}`);
-          const data = await response.json();
-          const count = Number.isFinite(Number(data.value))
-            ? Number(data.value)
-            : Number.isFinite(Number(data.count))
-            ? Number(data.count)
-            : null;
-
-          if (Number.isFinite(count)) {
-            const formatted = count.toLocaleString("en-US");
-            visitCountEl.textContent = formatted;
-            visitCountEl.title = `Total visits recorded for judysrecipe.com: ${formatted}`;
-          } else {
-            visitCountEl.textContent = "—";
-          }
-        } catch (error) {
-          visitCountEl.textContent = "Offline";
-        }
-      }
-
-      updateVisitCounter();
-    </script>
   </body>
 </html>
